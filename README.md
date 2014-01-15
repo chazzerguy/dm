@@ -29,5 +29,8 @@ dm find -s 14/1/1 -csv | column -t -s,
 // all of last year's interval workouts in JSON
 dm find -s 13/1/1 -e 13/12/31 -p "(?i)interval"
 
+// search for patterns like "8 x 400", "10x800", "10 x 1600m"
+dm find -s 13/1/1 -e 13/12/31 -p "(?i)\d{1,2} *x *\d{3,4}"
+
 // count ALL of your entries on Linux
 dm find -csv | wc -l
