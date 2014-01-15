@@ -19,19 +19,25 @@ I also started adding basic search capability.  Still tinkering with this... not
     dm find [-s start date] [-e end date] [-p regex pattern]
 
 All of this year's entries in JSON:
+
     dm find -s 14/1/1
 
 All of this year's entries in an abridged CSV format (needs work):
+
     dm find -s 14/1/1 -csv
 
 All of this year's entries in a column layout (Linux):
+
     dm find -s 14/1/1 -csv | column -t -s,
 
 All of last year's interval workouts in JSON:
+
     dm find -s 13/1/1 -e 13/12/31 -p "(?i)interval"
 
 Search for patterns like "8 x 400", "10x800", "10 x 1600m":
+
     dm find -s 13/1/1 -e 13/12/31 -p "(?i)\d{1,2} *x *\d{3,4}"
 
 Count ALL of your entries on Linux:
+
     dm find -csv | wc -l
