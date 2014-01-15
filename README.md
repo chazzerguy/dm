@@ -12,11 +12,11 @@ The initial sync will probably take minutes depending on number of entries.  Fut
 
 If you're on some flavor of unix, your data should be stored in ~/.dailymile_cli/<username>/entries.json.  You can use your favorite browser plugin or editor to view the JSON pretty-printed.  Or, if you have python 2.6+ installed...
 
-cat ~/.dailymile_cli/<username>/entries.json | python -mjson.tool | less
+    cat ~/.dailymile_cli/<username>/entries.json | python -mjson.tool | less
 
 I also started adding basic search capability.  Still tinkering with this... not sure where or how far it's headed.  Not even sure it works correctly!  Here are the basics...
 
-dm find [-s start date] [-e end date] [-p regex pattern]
+    dm find [-s start date] [-e end date] [-p regex pattern]
 
 All of this year's entries in JSON:
     dm find -s 14/1/1
