@@ -17,6 +17,10 @@ type config struct {
    User string
 }
 
+var defaultConfig = &config{
+   "",   // User
+}
+
 func loadConfig() (*config, error) {
    cfgfile, _ := configFile()
    bytes, err := ioutil.ReadFile(cfgfile)
@@ -101,12 +105,27 @@ func main() {
 
    cfg, err := loadConfig()
    if err != nil {
-      fatalf("%s [dm.go]", err)
+      if os.IsNotExist(err) {
+         // create a default config file
+         err = saveConfig(defaultConfig)
+         if err != nil {
+            fatalf("%s [dm.go - saveConfig]", err)
+         }
+         cfg = defaultConfig
+      } else {
+         fatalf("%s [dm.go - loadConfig]", err)
+      }
    }
 
    // command line flags override config file
    if mainUser != "" {
       cfg.User = mainUser
+   }
+
+   if cfg.User == "" {
+      fatalf(
+`No user set.  Either use the 'dm user <user name>' command or
+the '-u <user name>' command line argument.`)
    }
 
    for _, cmd := range commands {
