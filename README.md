@@ -50,3 +50,12 @@ Search for patterns like "8 x 400", "10x800", "10 x 1600m":
 Count ALL of your entries on Linux:
 
     dm find -csv | wc -l
+
+The 'dm find' command can generate HTML for entries, formatted using a
+user-defined template.  A simple example template, entries.html, is provided
+with this source.  See http://golang.org/pkg/text/template for information
+on the Go language template rules.
+
+Format matching entries as HTML:
+
+    dm find -s 14/1/1 -html entries.html
