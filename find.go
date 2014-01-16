@@ -4,9 +4,6 @@ import (
    "github.com/dgnorton/dmapi"
    "encoding/json"
    "fmt"
-   "html/template"
-   "io"
-   "io/ioutil"
    "os"
    "path"
 )
@@ -32,14 +29,14 @@ func init() {
    var findStart string    // -s start date
    var findEnd string      // -e end date
    var findPattern string  // -p regex pattern or *
-   var findCSV bool        // -csv
+   var findFormat string   // -f
    var findHTML string     // -html
 
 func addFindFlags(cmd *Command) {
    cmd.Flag.StringVar(&findStart, "s", "", "")
    cmd.Flag.StringVar(&findEnd, "e", "", "")
    cmd.Flag.StringVar(&findPattern, "p", "", "")
-   cmd.Flag.BoolVar(&findCSV, "csv", false, "")
+   cmd.Flag.StringVar(&findFormat, "format", "", "")
    cmd.Flag.StringVar(&findHTML, "html", "", "")
 }
 
@@ -75,18 +72,15 @@ func runFind(cfg *config, cmd *Command, args []string) {
       fatalf("%s [find.go - runFind - dmapi.Find]", err)
    }
 
-   if findCSV {
-      for _, entry := range matches.Entries {
-         fmt.Printf("%s,%f,%s,%d\n",
-            entry.At,
-            entry.Workout.Distance.Value,
-            entry.Workout.Distance.Units,
-            entry.Workout.Duration)
+   if findFormat != "" {
+      err = fprintText(os.Stdout, matches, findFormat)
+      if err != nil {
+         fatalf("%s [find.go - runFind - fprintText]", err)
       }
    } else if findHTML != "" {
-     err := entriesHTML(os.Stdout, matches, findHTML)
+     err = fprintHTML(os.Stdout, matches, findHTML)
       if err != nil {
-         fatalf("%s [find.go - runFind - entriesHTML]", err)
+         fatalf("%s [find.go - runFind - fprintHTML]", err)
       }
    } else {
        bytes, err := json.Marshal(matches)
@@ -97,18 +91,3 @@ func runFind(cfg *config, cmd *Command, args []string) {
    }
 }
 
-func entriesHTML(wr io.Writer, e *dmapi.Entries, templateFile string) error {
-   bytes, err := ioutil.ReadFile(templateFile)
-   if err != nil {
-      return err
-   }
-
-   htmlTemplate, err := template.New("htmlTemplate").Parse(string(bytes))
-   if err != nil {
-      return err
-   }
-
-   err = htmlTemplate.ExecuteTemplate(wr, "htmlTemplate", e)
-
-   return err
-}

@@ -23,9 +23,10 @@ If you're on some flavor of unix, your data should be stored in ~/.dailymile_cli
 
     cat ~/.dailymile_cli/<username>/entries.json | python -mjson.tool | less
 
-I also started adding basic search capability.  Still tinkering with this... not sure where or how far it's headed.  Not even sure it works correctly!  Here are the basics...
+Basic search & formatting capabilities...
 
     dm find [-s start date] [-e end date] [-p regex pattern]
+            [-format template file] [-html template file]
 
 All of this year's entries in JSON:
 
@@ -39,9 +40,10 @@ All of this year's entries in a column layout (Linux):
 
     dm find -s 14/1/1 -csv | column -t -s,
 
-All of last year's interval workouts in JSON:
+Case-insensitive search for the word "interval":
 
     dm find -s 13/1/1 -e 13/12/31 -p "(?i)interval"
+Removing the "(?i)" in the above pattern will make the search case-sensitive.
 
 Search for patterns like "8 x 400", "10x800", "10 x 1600m":
 
@@ -51,11 +53,15 @@ Count ALL of your entries on Linux:
 
     dm find -csv | wc -l
 
-The 'dm find' command can generate HTML for entries, formatted using a
-user-defined template.  A simple example template, entries.html, is provided
-with this source.  See http://golang.org/pkg/text/template for information
+The 'dm find' command can format output using user-defined templates.
+Simple example templates (entries.csv & entries.html) are provided with
+this source.  See http://golang.org/pkg/text/template for information
 on the Go language template rules.
 
 Format matching entries as HTML:
 
     dm find -s 14/1/1 -html entries.html
+
+Format matching entries as CSV:
+
+    dm find -s 14/1/1 -format entries.csv
