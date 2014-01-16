@@ -1,0 +1,13 @@
+<html>
+<head></head>
+<body>
+{{range .Entries}}
+   <div>
+      <h3>{{.Workout.Title}}</h3>
+      {{.At}}<br />
+      {{.Workout.Distance.Value}} {{.Workout.Distance.Units}}<br />
+      {{.Message}}
+   </div>
+{{end}}
+</body>
+</html>

@@ -4,6 +4,9 @@ import (
    "github.com/dgnorton/dmapi"
    "encoding/json"
    "fmt"
+   "html/template"
+   "io"
+   "io/ioutil"
    "os"
    "path"
 )
@@ -30,12 +33,14 @@ func init() {
    var findEnd string      // -e end date
    var findPattern string  // -p regex pattern or *
    var findCSV bool        // -csv
+   var findHTML string     // -html
 
 func addFindFlags(cmd *Command) {
    cmd.Flag.StringVar(&findStart, "s", "", "")
    cmd.Flag.StringVar(&findEnd, "e", "", "")
    cmd.Flag.StringVar(&findPattern, "p", "", "")
    cmd.Flag.BoolVar(&findCSV, "csv", false, "")
+   cmd.Flag.StringVar(&findHTML, "html", "", "")
 }
 
 func runFind(cfg *config, cmd *Command, args []string) {
@@ -78,6 +83,11 @@ func runFind(cfg *config, cmd *Command, args []string) {
             entry.Workout.Distance.Units,
             entry.Workout.Duration)
       }
+   } else if findHTML != "" {
+     err := entriesHTML(os.Stdout, matches, findHTML)
+      if err != nil {
+         fatalf("%s [find.go - runFind - entriesHTML]", err)
+      }
    } else {
        bytes, err := json.Marshal(matches)
        if err != nil {
@@ -85,4 +95,20 @@ func runFind(cfg *config, cmd *Command, args []string) {
        }
        fmt.Fprintf(os.Stdout, "%s", string(bytes))
    }
+}
+
+func entriesHTML(wr io.Writer, e *dmapi.Entries, templateFile string) error {
+   bytes, err := ioutil.ReadFile(templateFile)
+   if err != nil {
+      return err
+   }
+
+   htmlTemplate, err := template.New("htmlTemplate").Parse(string(bytes))
+   if err != nil {
+      return err
+   }
+
+   err = htmlTemplate.ExecuteTemplate(wr, "htmlTemplate", e)
+
+   return err
 }
