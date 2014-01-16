@@ -5,7 +5,16 @@ Uses the Go compiler (http://golang.org/)
 
 The command line help isn't working yet so here's a quick run-down...
 
+The first time running it, the user needs to be set using this...
+
+    dm -u <username> user <username>
+
+After the first time, the default user can be changed using...
+
     dm user <username>
+
+Pull default user's entries from dailymile.com...
+
     dm sync
 
 The initial sync will probably take minutes depending on number of entries.  Future syncs will be incremental and should only take a few seconds.  It'll tell you if it was "Already up-to-date" or how many new entries it pulled down.  One thing it does NOT handle are deletes.  If you sync and then delete an entry on the website it will remain in your local copy of the data unless you delete and do a full sync. 
