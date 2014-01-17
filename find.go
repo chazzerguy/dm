@@ -12,7 +12,7 @@ import (
 )
 
 var cmdFind = &Command {
-   UsageLine:  "find",
+   UsageLine:  "find [-s start date] [-e end date] [-p regex] [-f output template file]",
    Short:      "search local data store for specified entries",
    Long: `
 Searchs the local data for an entries matching the specified

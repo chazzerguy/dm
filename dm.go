@@ -4,6 +4,7 @@ import (
    "flag"
    "fmt"
    "encoding/json"
+   "io"
    "io/ioutil"
    "log"
    "os"
@@ -11,6 +12,9 @@ import (
    "path"
    "strings"
    "sync"
+   "text/template"
+   "unicode"
+   "unicode/utf8"
 )
 
 type config struct {
@@ -98,6 +102,11 @@ func main() {
 
    if len(args) < 1 {
       usage()
+   }
+
+   if args[0] == "help" {
+      help(args[1:])
+      return
    }
 
    // make working directory if it doesn't exist...or die trying
@@ -261,4 +270,69 @@ var logf = log.Printf
 func usage() {
    fmt.Fprintf(os.Stderr, "dm is a command line tool for Dailymile.com\n\n  usage: dm command [args]\n")
    os.Exit(2)
+}
+
+var usageTemplate = `dm is a command line tool for DailyMile.com.
+
+Usage:
+
+        dm [-u user name] command [arguments]
+
+The commands are:
+{{range .}}{{if .Runnable}}
+    {{.Name | printf "%-11s"}} {{.Short}}{{end}}{{end}}
+
+Use "dm help [topic]" for more information about that topic.
+
+`
+
+var helpTemplate = `{{if .Runnable}}usage: dm {{.UsageLine}}
+
+{{end}}{{.Long | trim}}
+`
+
+func capitalize(s string) string {
+   if s == "" {
+      return s
+   }
+   r, n := utf8.DecodeRuneInString(s)
+   return string(unicode.ToTitle(r)) + s[n:]
+}
+
+func help(args []string) {
+   if len(args) == 0 {
+      printUsage(os.Stdout)
+      // not exit 2:  succeeded at 'dm help'.
+      return
+   }
+   if len(args) != 1 {
+      fmt.Fprintf(os.Stderr, "usage: dm help command\n\nToo many arguments given.\n")
+      os.Exit(2) // failed at 'dm help'
+   }
+
+   arg := args[0]
+
+   for _, cmd := range commands {
+      if cmd.Name() == arg {
+         tmpl(os.Stdout, helpTemplate, cmd)
+         // not exit 2:  succeeded at 'dm help cmd'.
+         return
+      }
+   }
+
+   fmt.Fprintf(os.Stderr, "Unknown help topic %#q.  Run 'dm help'.\n", arg)
+   os.Exit(2) // failed at 'dm help cmd'
+}
+
+func tmpl(w io.Writer, text string, data interface{}) {
+   t := template.New("top")
+   t.Funcs(template.FuncMap{"trim": strings.TrimSpace, "capitalize": capitalize})
+   template.Must(t.Parse(text))
+   if err := t.Execute(w, data); err != nil {
+      panic(err)
+   }
+}
+
+func printUsage(w io.Writer) {
+   tmpl(w, usageTemplate, commands)
 }
