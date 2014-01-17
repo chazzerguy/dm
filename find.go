@@ -77,7 +77,7 @@ func runFind(cfg *config, cmd *Command, args []string) {
       var wr io.Writer = os.Stdout
 
       if filepath.Ext(findFormat) == "tsv" {
-         wr = tabwriter.NewWriter(wr, 0, 9, 0, '\t', 0)
+         wr = tabwriter.NewWriter(wr, 0, 8, 1, '\t', 0)
       }
 
       if filepath.Ext(findFormat) == "html" {
