@@ -26,19 +26,24 @@ If you're on some flavor of unix, your data should be stored in ~/.dailymile_cli
 Basic search & formatting capabilities...
 
     dm find [-s start date] [-e end date] [-p regex pattern]
-            [-format template file] [-html template file]
+            [-f template file]
 
-All of this year's entries in JSON:
+All of this year's entries in JSON (default format):
 
     dm find -s 14/1/1
 
-All of this year's entries in an abridged CSV format (needs work):
+The 'dm find' command can format output using user-defined templates.
+Simple example templates (entries.csv, entries.tsv, entries.html) are provided
+with this source.  See http://golang.org/pkg/text/template for information
+on the Go language template rules.
 
-    dm find -s 14/1/1 -csv
+All of this year's entries in CSV format:
+
+    dm find -s 14/1/1 -f entries.csv
 
 All of this year's entries in a column layout (Linux):
 
-    dm find -s 14/1/1 -csv | column -t -s,
+    dm find -s 14/1/1 -f entries.csv | column -t -s,
 
 Case-insensitive search for the word "interval":
 
@@ -51,17 +56,8 @@ Search for patterns like "8 x 400", "10x800", "10 x 1600m":
 
 Count ALL of your entries on Linux:
 
-    dm find -csv | wc -l
-
-The 'dm find' command can format output using user-defined templates.
-Simple example templates (entries.csv & entries.html) are provided with
-this source.  See http://golang.org/pkg/text/template for information
-on the Go language template rules.
+    dm find -f entries.csv | wc -l
 
 Format matching entries as HTML:
 
-    dm find -s 14/1/1 -html entries.html
-
-Format matching entries as CSV:
-
-    dm find -s 14/1/1 -format entries.csv
+    dm find -s 14/1/1 -f entries.html
