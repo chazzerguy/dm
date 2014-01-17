@@ -4,8 +4,11 @@ import (
    "github.com/dgnorton/dmapi"
    "encoding/json"
    "fmt"
+   "io"
    "os"
    "path"
+   "path/filepath"
+   "text/tabwriter"
 )
 
 var cmdFind = &Command {
@@ -30,14 +33,12 @@ func init() {
    var findEnd string      // -e end date
    var findPattern string  // -p regex pattern or *
    var findFormat string   // -f
-   var findHTML string     // -html
 
 func addFindFlags(cmd *Command) {
    cmd.Flag.StringVar(&findStart, "s", "", "")
    cmd.Flag.StringVar(&findEnd, "e", "", "")
    cmd.Flag.StringVar(&findPattern, "p", "", "")
-   cmd.Flag.StringVar(&findFormat, "format", "", "")
-   cmd.Flag.StringVar(&findHTML, "html", "", "")
+   cmd.Flag.StringVar(&findFormat, "f", "", "")
 }
 
 func runFind(cfg *config, cmd *Command, args []string) {
@@ -73,14 +74,22 @@ func runFind(cfg *config, cmd *Command, args []string) {
    }
 
    if findFormat != "" {
-      err = fprintText(os.Stdout, matches, findFormat)
+      var wr io.Writer = os.Stdout
+
+      if filepath.Ext(findFormat) == "tsv" {
+         tr := new(tabwriter.Writer)
+         tr.Init(wr, 0, 9, 0, '\t', 0)
+         wr = tr
+      }
+
+      if filepath.Ext(findFormat) == "html" {
+         err = fprintHTML(wr, matches, findFormat)
+      } else {
+         err = fprintText(wr, matches, findFormat)
+      }
+
       if err != nil {
          fatalf("%s [find.go - runFind - fprintText]", err)
-      }
-   } else if findHTML != "" {
-     err = fprintHTML(os.Stdout, matches, findHTML)
-      if err != nil {
-         fatalf("%s [find.go - runFind - fprintHTML]", err)
       }
    } else {
        bytes, err := json.Marshal(matches)
