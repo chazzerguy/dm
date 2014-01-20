@@ -1,7 +1,34 @@
-DailyMile.com History Puller
-============================
+DailyMile.com Command Line Tool
+===============================
 
-Uses the Go compiler (http://golang.org/)
+
+INSTALL
+-------
+
+Linux & OSX:
+
+  Extract the zip to a directory and add that directory to your PATH.
+
+Windows:
+
+  Run the installer and follow the prompts.
+
+
+BUILD FROM SOURCE
+-----------------
+
+This project is written in Google's Go language.  Go is free and open source.  See http://golang.org for instructions on installing the Go compiler.
+
+To build from source:
+
+git clone http://github.com/dgnorton/dm
+cd dm && go get && go build
+
+
+USAGE
+-----
+
+Use the command line help for a complete list of commands...
 
     dm help
     dm help command
