@@ -3,7 +3,8 @@ DailyMile.com History Puller
 
 Uses the Go compiler (http://golang.org/)
 
-The command line help isn't working yet so here's a quick run-down...
+    dm help
+    dm help command
 
 The first time running it, the user needs to be set using this...
 
