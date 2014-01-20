@@ -80,6 +80,7 @@ var commands = []*Command{
    cmdUser,
    cmdSync,
    cmdFind,
+   cmdRm,
 }
 
 var exitStatus = 0
