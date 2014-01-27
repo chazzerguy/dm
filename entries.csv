@@ -1,3 +1,3 @@
-date,type,distance,units,duration,title
-{{range .Entries}}{{.Time.Format "06/1/2"}},{{.Workout.Type}},{{.Workout.Distance.Value}},{{.Workout.Distance.Units}},{{.Workout.DurationStrUnits}},{{.Workout.Title}}
+date,type,distance,units,duration,pace,title
+{{range .Entries}}{{.Time.Format "06/1/2"}},{{.Workout.Type}},{{.Workout.Distance.Value}},{{.Workout.Distance.Units}},{{.Workout.DurationStrColons}},{{.Workout.PaceStr}},{{.Workout.Title}}
 {{end}}
