@@ -15,7 +15,7 @@ import (
 )
 
 var cmdFind = &Command {
-   UsageLine:  "find [-s start date] [-e end date] [-p regex] [-f output template file]",
+   UsageLine:  "find [-s start date] [-e end date] [-p regex] [-f output template file | json]",
    Short:      "search local data store for specified entries",
    Long: `
 Searchs the local data for an entries matching the specified
@@ -41,7 +41,7 @@ func addFindFlags(cmd *Command) {
    cmd.Flag.StringVar(&findStart, "s", "", "")
    cmd.Flag.StringVar(&findEnd, "e", "", "")
    cmd.Flag.StringVar(&findPattern, "p", "", "")
-   cmd.Flag.StringVar(&findFormat, "f", "", "")
+   cmd.Flag.StringVar(&findFormat, "f", "entries.tsv", "")
 }
 
 func runFind(cfg *config, cmd *Command, args []string) {
@@ -87,7 +87,7 @@ func runFind(cfg *config, cmd *Command, args []string) {
       fatalf("%s [find.go - runFind - dmapi.Find]", err)
    }
 
-   if findFormat != "" {
+   if findFormat != "json" {
       var wr io.Writer = os.Stdout
 
       if filepath.Ext(findFormat) == "tsv" {
