@@ -2,13 +2,16 @@ package main
 
 import (
    "github.com/dgnorton/dmapi"
+   "github.com/dgnorton/nltime"
    "encoding/json"
    "fmt"
    "io"
    "os"
    "path"
    "path/filepath"
+   "strings"
    "text/tabwriter"
+   "time"
 )
 
 var cmdFind = &Command {
@@ -68,6 +71,17 @@ func runFind(cfg *config, cmd *Command, args []string) {
       fatalf("No entries to search.  Need to run 'dm sync'?")
    }
 
+   if len(args) > 0 {
+      args, params, err := parseNaturalLangArgs(args)
+      if err != nil {
+         fatalf("%s [find.go - runFind - parseNaturalLangArgs]", err)
+      }
+
+      cmd.Flag.Parse(args)
+      findStart = params.StartDate
+      findEnd = params.EndDate
+   }
+
    matches, err := entries.Find(findStart, findEnd, findPattern)
    if err != nil {
       fatalf("%s [find.go - runFind - dmapi.Find]", err)
@@ -98,3 +112,22 @@ func runFind(cfg *config, cmd *Command, args []string) {
    }
 }
 
+type findParams struct {
+  StartDate, EndDate, Pattern string
+}
+
+func parseNaturalLangArgs(args []string) ([]string, findParams, error) {
+   var nlargs, otherArgs []string
+   for i, arg := range args {
+      if arg[0] == '-' {
+         otherArgs = args[i:]
+         break
+      }
+      nlargs = append(nlargs, arg)
+   }
+   d, err := nltime.ParseRange(strings.Join(nlargs, " "), time.Monday)
+   if err != nil {
+      return nil, findParams{}, err
+   }
+   return otherArgs, findParams{d[0].Format("06/1/2"), d[1].Format("06/1/2"), ""}, nil
+}
