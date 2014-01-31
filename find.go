@@ -6,6 +6,7 @@ import (
    "encoding/json"
    "fmt"
    "io"
+   "log"
    "os"
    "path"
    "path/filepath"
@@ -48,33 +49,33 @@ func runFind(cfg *config, cmd *Command, args []string) {
    user := cfg.User
    usrDir, err := userDir(user)
    if err != nil {
-      fatalf("%s [find.go - runFind - userDir]", err)
+      log.Fatalf("%s", err)
    }
 
    userFile := path.Join(usrDir, "entries.json")
 
    haveUserFile, err := isFile(userFile)
    if err != nil {
-      fatalf("%s [find.go - runFind - isFile]", err)
+      log.Fatalf("%s", err)
    }
 
    if haveUserFile == false {
-      fatalf("No entries to search.  Need to run 'dm sync'?")
+      log.Fatalf("No entries to search.  Need to run 'dm sync'?")
    }
 
    entries, err := dmapi.LoadEntries(userFile)
    if err != nil {
-      fatalf("%s [find.go - runFind - dmapi.LoadEntries]", err)
+      log.Fatalf("%s", err)
    }
 
    if len(entries.Entries) == 0 {
-      fatalf("No entries to search.  Need to run 'dm sync'?")
+      log.Fatalf("No entries to search.  Need to run 'dm sync'?")
    }
 
    if len(args) > 0 {
       args, params, err := parseNaturalLangArgs(args)
       if err != nil {
-         fatalf("%s [find.go - runFind - parseNaturalLangArgs]", err)
+         log.Fatalf("%s", err)
       }
 
       cmd.Flag.Parse(args)
@@ -84,7 +85,7 @@ func runFind(cfg *config, cmd *Command, args []string) {
 
    matches, err := entries.Find(findStart, findEnd, findPattern)
    if err != nil {
-      fatalf("%s [find.go - runFind - dmapi.Find]", err)
+      log.Fatalf("%s", err)
    }
 
    if findFormat != "json" {
@@ -101,12 +102,12 @@ func runFind(cfg *config, cmd *Command, args []string) {
       }
 
       if err != nil {
-         fatalf("%s [find.go - runFind - fprintText]", err)
+         log.Fatalf("%s", err)
       }
    } else {
        bytes, err := json.Marshal(matches)
        if err != nil {
-         fatalf("%s [find.go - runFind - json.Marshal]", err)
+         log.Fatalf("%s", err)
        }
        fmt.Fprintf(os.Stdout, "%s", string(bytes))
    }

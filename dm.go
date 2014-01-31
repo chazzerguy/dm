@@ -97,6 +97,8 @@ func setExitStatus(n int) {
 func main() {
    var mainUser string  // -u user name
 
+   log.SetFlags(log.LstdFlags | log.Lshortfile)
+
    flag.StringVar(&mainUser, "u", "", "")
    flag.Parse()
    args := flag.Args()
@@ -119,11 +121,11 @@ func main() {
          // create a default config file
          err = saveConfig(defaultConfig)
          if err != nil {
-            fatalf("%s [dm.go - saveConfig]", err)
+            log.Fatalf("%s", err)
          }
          cfg = defaultConfig
       } else {
-         fatalf("%s [dm.go - loadConfig]", err)
+         log.Fatalf("%s", err)
       }
    }
 
@@ -133,7 +135,7 @@ func main() {
    }
 
    if cfg.User == "" {
-      fatalf(
+      log.Fatalf(
 `No user set.  Either use the 'dm user <user name>' command or
 the '-u <user name>' command line argument.`)
    }
@@ -178,16 +180,16 @@ func userDir(user string) (string, error) {
 func makeUserDir(user string) {
    usr, err := userDir(user)
    if err != nil {
-      fatalf("%s [dm.go]", err)
+      log.Fatalf("%s", err)
    }
    exists, err := isDir(usr)
    if err != nil {
-      fatalf("%s [dm.go]", err)
+      log.Fatalf("%s", err)
    }
    if exists == false {
       err = os.MkdirAll(usr, 0700)
       if err != nil {
-         fatalf("%s [dm.go]", err)
+         log.Fatalf("%s", err)
       }
    }
 }
@@ -211,18 +213,18 @@ func workDir() (string, error) {
 func makeWorkDir() {
    wrkdir, err := workDir()
    if err != nil {
-      fatalf("%s [dm.go]", err)
+      log.Fatalf("%s", err)
    }
 
    exists, err := isDir(wrkdir)
    if err != nil {
-      fatalf("%s [dm.go]", err)
+      log.Fatalf("%s", err)
    }
 
    if exists == false {
       err = os.MkdirAll(wrkdir, 0700)
       if err != nil {
-         fatalf("%s [dm.go]", err)
+         log.Fatalf("%s", err)
       }
    }
 }

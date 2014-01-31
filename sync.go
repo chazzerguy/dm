@@ -3,6 +3,7 @@ package main
 import (
    "github.com/dgnorton/dmapi"
    "fmt"
+   "log"
    "path"
 )
 
@@ -35,7 +36,7 @@ func runFullSync(cfg *config, cmd *Command, args []string) {
    for pgNbr := 1;; pgNbr = pgNbr + 1 {
       pageEntries, err := dmapi.EntriesByPage(user, pgNbr)
       if err != nil {
-         fatalf("%s [sync.go - runFullSync]", err)
+         log.Fatalf("%s", err)
       } else if len(pageEntries.Entries) == 0 {
          break
       }
@@ -48,7 +49,7 @@ func runFullSync(cfg *config, cmd *Command, args []string) {
    userFile := path.Join(usrDir, "entries.json")
    err := dmapi.SaveEntries(userFile, &entries)
    if err != nil {
-      fatalf("%s [sync.go - runFullSync]", err)
+      log.Fatalf("%s", err)
    }
 }
 
@@ -60,7 +61,7 @@ func runIncSync(cfg *config, cmd *Command, args []string) {
 
    haveUserFile, err := isFile(userFile)
    if err != nil {
-      fatalf("%s [sync.go - runIncSync - isFile]", err)
+      log.Fatalf("%s", err)
    }
 
    if haveUserFile == false {
@@ -71,7 +72,7 @@ func runIncSync(cfg *config, cmd *Command, args []string) {
 
    entries, err := dmapi.LoadEntries(userFile)
    if err != nil {
-      fatalf("%s [sync.go - runIncSync dmapi.LoadEntries]", err)
+      log.Fatalf("%s", err)
    }
 
    if len(entries.Entries) == 0 {
@@ -82,12 +83,12 @@ func runIncSync(cfg *config, cmd *Command, args []string) {
 
    t, err := entries.Entries[0].Time()
    if err != nil {
-      fatalf("%s [sync.go - runIncSync - Time()]", err)
+      log.Fatalf("%s", err)
    }
 
    newEntries, err := dmapi.EntriesSince(user, t.Unix())
    if err != nil {
-      fatalf("%s [sync.go - runIncSync - dmapi.EntriesSince]", err)
+      log.Fatalf("%s", err)
    } else if len (newEntries.Entries) == 0 {
       fmt.Println("Already up-to-date.")
       return
@@ -99,7 +100,7 @@ func runIncSync(cfg *config, cmd *Command, args []string) {
    userFile = path.Join(usrDir, "entries.json")
    err = dmapi.SaveEntries(userFile, entries)
    if err != nil {
-      fatalf("%s [sync.go - runIncSync - dmapi.SaveEntries]", err)
+      log.Fatalf("%s", err)
    }
 
    if len(newEntries.Entries) == 1 {

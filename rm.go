@@ -3,6 +3,7 @@ package main
 import (
    "github.com/dgnorton/dmapi"
    "fmt"
+   "log"
    "path"
    "strconv"
 )
@@ -40,44 +41,44 @@ func runRm(cfg *config, cmd *Command, args []string) {
    if args[0] != "last" {
       id, err = strconv.Atoi(args[0])
       if err != nil {
-         fatalf("%s [rm.go - runRm - Atoi]", err)
+         log.Fatalf("%s", err)
       }
    }
 
    user := cfg.User
    usrDir, err := userDir(user)
    if err != nil {
-      fatalf("%s [rm.go - runRm - userDir]", err)
+      log.Fatalf("%s", err)
    }
 
    userFile := path.Join(usrDir, "entries.json")
 
    haveUserFile, err := isFile(userFile)
    if err != nil {
-      fatalf("%s [rm.go - runRm - isFile]", err)
+      log.Fatalf("%s", err)
    }
 
    if haveUserFile == false {
-      fatalf("No entries to search.  Need to run 'dm sync'?")
+      log.Fatalf("No entries to search.  Need to run 'dm sync'?")
    }
 
    entries, err := dmapi.LoadEntries(userFile)
    if err != nil {
-      fatalf("%s [rm.go - runRm - dmapi.LoadEntries]", err)
+      log.Fatalf("%s", err)
    }
 
    if len(entries.Entries) == 0 {
-      fatalf("No entries to search.  Need to run 'dm sync'?")
+      log.Fatalf("No entries to search.  Need to run 'dm sync'?")
    }
 
    err = entries.Remove(id)
    if err != nil {
-      fatalf("%s [rm.go - runRm - dmapi.FindId]", err)
+      log.Fatalf("%s", err)
    }
 
    err = dmapi.SaveEntries(userFile, entries)
    if err != nil {
-      fatalf("%s [rm.go - runRm - dmapi.SaveEntries]", err)
+      log.Fatalf("%s", err)
    }
 
    fmt.Println("Entry removed.")
