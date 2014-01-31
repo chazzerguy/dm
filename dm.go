@@ -258,11 +258,6 @@ func isFile(path string) (bool, error) {
    return false, err
 }
 
-func fatalf(format string, args ...interface{}) {
-   errorf(format, args...)
-   exit()
-}
-
 func errorf(format string, args ...interface{}) {
    log.Printf(format, args...)
    setExitStatus(1)
