@@ -5,13 +5,7 @@ DailyMile.com Command Line Tool
 INSTALL
 -------
 
-Linux & OSX:
-
-  Extract the zip to a directory and add that directory to your PATH.
-
-Windows:
-
-  Run the installer and follow the prompts.
+Extract the zip to a directory and add that directory to your PATH.
 
 
 BUILD FROM SOURCE
@@ -23,6 +17,8 @@ To build from source:
 
 git clone http://github.com/dgnorton/dm
 cd dm && go get && go build
+
+If you wish to cross-compile, see http://dave.cheney.net/2013/07/09/an-introduction-to-cross-compilation-with-go-1-1.  Once you've successfully run through Dave's instructions, the all.bash script in the project can be used to generate Windows, Linux, and Mac binaries (32 & 64 bit).
 
 
 USAGE
@@ -53,15 +49,21 @@ If you're on some flavor of unix, your data should be stored in ~/.dailymile_cli
 
 Basic search & formatting capabilities...
 
-    dm find [-s start date] [-e end date] [-p regex pattern]
+    dm find [-s start date] [-e end date] [natural language dates] [-p regex pattern]
             [-f template file]
 
-All of this year's entries in JSON (default format):
+Basic natural language examples:
 
-    dm find -s 14/1/1
+    dm find week
+    dm find month
+    dm find year
+    dm find last week
+    dm find last month
+    dm find last month last year
+    dm find next month last year
 
 The 'dm find' command can format output using user-defined templates.
-Simple example templates (entries.csv, entries.tsv, entries.html) are provided
+Simple example templates (entries.csv, entries.tsv (default), entries.html) are provided
 with this source.  See http://golang.org/pkg/text/template for information
 on the Go language template rules.
 
@@ -89,3 +91,7 @@ Count ALL of your entries on Linux:
 Format matching entries as HTML:
 
     dm find -s 14/1/1 -f entries.html
+
+Format matching entries as JSON:
+
+   dm find last week -f json
