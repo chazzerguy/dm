@@ -4,7 +4,7 @@
 {{range .Entries}}
    <div>
       <h3>{{.Workout.Title}}</h3>
-      {{.At}}<br />
+      {{.Time.Local.Format "06/01/02"}}<br />
       {{.Workout.Distance.Value}} {{.Workout.Distance.Units}}<br />
       {{.Message}}
    </div>
