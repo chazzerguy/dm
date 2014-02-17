@@ -16,6 +16,7 @@ This project is written in Google's Go language.  Go is free and open source.  S
 To build from source:
 
 git clone http://github.com/dgnorton/dm
+
 cd dm && go get && go build
 
 If you wish to cross-compile, see http://dave.cheney.net/2013/07/09/an-introduction-to-cross-compilation-with-go-1-1.  Once you've successfully run through Dave's instructions, the all.bash script in the project can be used to generate Windows, Linux, and Mac binaries (32 & 64 bit).
