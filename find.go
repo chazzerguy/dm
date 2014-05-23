@@ -37,12 +37,14 @@ var findStart string   // -s start date
 var findEnd string     // -e end date
 var findPattern string // -p regex pattern or *
 var findFormat string  // -f
+var findType string    // -t workout-type
 
 func addFindFlags(cmd *Command) {
 	cmd.Flag.StringVar(&findStart, "s", "", "")
 	cmd.Flag.StringVar(&findEnd, "e", "", "")
 	cmd.Flag.StringVar(&findPattern, "p", "", "")
 	cmd.Flag.StringVar(&findFormat, "f", "entries.tsv", "")
+        cmd.Flag.StringVar(&findType, "t", "", "")
 }
 
 func runFind(cfg *config, cmd *Command, args []string) {
@@ -83,7 +85,7 @@ func runFind(cfg *config, cmd *Command, args []string) {
 		findEnd = params.EndDate
 	}
 
-	matches, err := entries.Find(findStart, findEnd, findPattern)
+	matches, err := entries.Find(findStart, findEnd, findPattern, findType)
 	if err != nil {
 		log.Fatalf("%s", err)
 	}
