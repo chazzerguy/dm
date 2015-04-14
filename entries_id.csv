@@ -1,0 +1,3 @@
+id,date,type,distance,units,duration,title
+{{range .Entries}}{{.Id}},{{.Time.Local.Format "06/1/2"}},{{.Workout.Type}},{{.Workout.Distance.Value}},{{.Workout.Distance.Units}},{{.Workout.DurationStrColons}},{{.Workout.Title}}
+{{end}}
